@@ -1,0 +1,73 @@
+<div *ngIf="vendors" class="mms-outer-wrapper">
+  <div>
+    <div class="vendor-wrap">
+        <h3>Vendors Listing</h3>
+    </div>
+    <div align="right">
+        <input type="button" value="Add Single Vendor" [routerLink]="['../vendor/add']" class="btn btn-primary">
+        <input type="button" value="Add Bulk Vendors" [routerLink]="['../vendor/bulk']" class="btn btn-primary">
+    </div>
+</div>
+	
+<section class="form-block">
+    <clr-datagrid>
+    <clr-dg-column>ID</clr-dg-column>
+    <clr-dg-column [clrDgField]="'code'">Code</clr-dg-column>
+    <clr-dg-column [clrDgField]="'name'">Name</clr-dg-column>
+    <clr-dg-column>Address</clr-dg-column>
+    <clr-dg-column [clrDgField]="'city'">City</clr-dg-column>
+    <clr-dg-column [clrDgField]="'state'">State</clr-dg-column>
+    <clr-dg-column [clrDgField]="'zip'">Zip</clr-dg-column>
+    <clr-dg-column>Status</clr-dg-column>
+    <clr-dg-column>Actions</clr-dg-column>
+
+    <clr-dg-row *clrDgItems="let vendor of vendors;trackBy: trackById" [ngClass]="{'inactive-row' : !vendor.active}" [clrDgItem]="vendor">
+        <clr-dg-cell>{{vendor.id}}</clr-dg-cell>
+        <clr-dg-cell><a [routerLink]="['../vendor/details/', vendor.id]">{{vendor.code}}</a></clr-dg-cell>
+        <clr-dg-cell>{{vendor.name}}</clr-dg-cell>
+        <clr-dg-cell>{{vendor.address}}</clr-dg-cell>
+        <clr-dg-cell>{{vendor.city}}</clr-dg-cell>
+        <clr-dg-cell>{{vendor.state}}</clr-dg-cell>
+        <clr-dg-cell>{{vendor.zip}}</clr-dg-cell>
+        <clr-dg-cell><label *ngIf="vendor.active">Active</label><label *ngIf="!vendor.active">Inactive</label></clr-dg-cell>
+        <clr-dg-cell>
+        	<div class="btn-group btn-primary">
+        		<button class="btn"  title="edit vendor" [routerLink]="['../vendor/edit/', vendor.id]">Edit</button>
+        		<!--button type="button" class="btn btn-warning" (click)="deleteVendor(hero.id)" *ngIf="!error">Delete</button-->
+        		<button class="btn btn-success" *ngIf="!vendor.active" class="btn btn-success" title="activate vendor" (click)="confirmActivateVendor(vendor)"><span class="btn-activate">Activate</span></button>
+        		<button class="btn btn-success" *ngIf="vendor.active" class="btn btn-success" title="inactivate vendor" (click)="confirmInactivateVendor(vendor)">Inactivate</button>
+        	</div>
+	     </clr-dg-cell>
+    </clr-dg-row>
+      <clr-dg-footer>
+      <clr-dg-pagination #pagination [clrDgPageSize]="15">
+        {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+        of {{pagination?.totalItems}} vendors
+    </clr-dg-pagination>
+      </clr-dg-footer>
+    </clr-datagrid>
+</section>
+<clr-modal [(clrModalOpen)]="vendorInactivateModal" [clrModalClosable]="false">
+        <h3 class="modal-title">Inactivate {{edit.name}}?</h3>
+      <div class="modal-body">
+        <!--Once you delete a vendor, you cannot get it back.-->
+          You are going to Inactivate Vendor {{edit.name}}.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="cancel()">Cancel</button>
+        <button type="button" class="btn btn-success" (click)="inactivateVendor(edit.id)">Inactivate</button>
+      </div>
+</clr-modal>
+
+<clr-modal [(clrModalOpen)]="vendorActivateModal" [clrModalClosable]="false">
+      <h3 class="modal-title">Activate {{edit.name}}?</h3>
+      <div class="modal-body">
+        <!--Once you delete a vendor, you cannot get it back.-->
+        You are going to activate Vendor {{edit.name}}.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="cancel()">Cancel</button>
+        <button type="button" class="btn btn-success" (click)="inactivateVendor(edit.id)">Activate</button>
+      </div>
+</clr-modal>
+</div>
